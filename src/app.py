@@ -58,8 +58,6 @@ async def main():
                       plugin_name="plugins",
                       class_init_arguments={"DatabasePlugin": {"db": database_service}})
 
-    chat_completion = kernel.get_service(type=ChatCompletionClientBase)
-
     # Enable automatic function calling
     execution_settings = AzureChatPromptExecutionSettings(tool_choice="auto")
     execution_settings.function_call_behavior = FunctionCallBehavior.EnableFunctions(auto_invoke=True, filters={})
