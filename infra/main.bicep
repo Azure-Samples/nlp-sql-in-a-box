@@ -15,10 +15,6 @@ param tags object
 
 //OpenAI Module Parameters
 param openaiName string = ''
-@allowed(['gpt-4o'])
-param gptModel string
-@allowed(['2024-05-13'])
-param gptVersion string
 
 //SQL Module Parameters
 param sqlServerName string = ''
@@ -60,8 +56,6 @@ module m_openai 'modules/openai.bicep' = {
   params: {
     location: location
     openaiName: names.openaiName
-    gptModel: gptModel
-    gptVersion: gptVersion
     tags: tags
   }
 }

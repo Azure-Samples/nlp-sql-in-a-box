@@ -1,8 +1,6 @@
 //Declare Parameters--------------------------------------------------------------------------------------------------------------------------
 param location string
 param openaiName string
-param gptModel string
-param gptVersion string
 param tags object = {}
 
 resource openai 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
@@ -27,12 +25,12 @@ resource openai 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
 
 resource gptDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   parent: openai
-  name: gptModel
+  name: 'gpt-4o'
   properties: {
     model: {
       format: 'OpenAI'
-      name: gptModel
-      version: gptVersion
+      name: 'gpt-4o'
+      version: '2024-05-13'
     }
   }
   sku: {
