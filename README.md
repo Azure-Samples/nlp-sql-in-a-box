@@ -24,15 +24,15 @@ And with Azure Speech Services, we will convert your speech into text and synthe
 ## What's in the Box
 <img src="./architecture/nlp_to_sql_architecture.png" />
 
-- Python application that leverages [Semantic Kernel]() and Speech Services to build a chatbot that can:
+- Python application that leverages [Semantic Kernel](https://learn.microsoft.com/en-us/semantic-kernel/overview/) and [Speech Services](https://azure.microsoft.com/en-us/products/ai-services/ai-speech) to build a chatbot that can:
   - Understand natural language database queries from speech
   - Translate them into SQL
   - Execute the SQL against an SQL Server database
   - Return the results as speech
 - Deployment templates of all resources needed, which includes:
-  - [OpenAI Service and Deployment]()
-  - [Speech Services]()
-  - [SQL Server]()
+  - [OpenAI Service and Deployment](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+  - [Speech Services](https://azure.microsoft.com/en-us/products/ai-services/ai-speech)
+  - [SQL Server](https://azure.microsoft.com/en-us/products/azure-sql/database/)
 
 This solution was adapted from the [Revolutionizing SQL Queries with Azure Open AI and Semantic Kernel](https://techcommunity.microsoft.com/t5/analytics-on-azure-blog/revolutionizing-sql-queries-with-azure-open-ai-and-semantic/ba-p/3913513) blog post.
 
@@ -136,7 +136,13 @@ User > No.
 
 ## Customize the Solution
 
-Describe different ideas on how to enhance or customize for their use cases
+### Add More Plugins
+You can add more plugins by:
+1. Creating a new Python file in the `src/plugins` directory
+2. Implementing your plugin as a class 
+
+### Reusing the Kernel
+If you want to reuse this logic in another project, it is really easy, You just need to reuse the src/kernel package in your project, passing the required parameters.
 
 ## How to Contribute
 
@@ -145,17 +151,15 @@ This project welcomes contributions and suggestions. Most contributions require 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq) or contact <opencode@microsoft.com> with any additional questions or comments.
+
 ## Key Contacts & Contributors
 
 Highlight the main contacts for the project and acknowledge contributors. You can adapt the structure from AI-in-a-Box:
 
 | Contact | GitHub ID | Email |
 |---------|-----------|-------|
-| Your Name | @YourGitHub | your.email@example.com |
+| ??      | ??        | ??    |
 
-## Acknowledgments
-
-If applicable, offer thanks to individuals, organizations, or projects that helped inspire or support your project.
 
 ## License
 
@@ -163,13 +167,7 @@ This project may contain trademarks or logos for projects, products, or services
 
 ## FAQ
 
-1. Failed to run `postprovision` hook due to `pwsh` not being recognized as a command.
-   ```
-   ERROR: error executing step command 'provision': failed running post hooks: 'postprovision' hook failed with exit code: '1', Path: '.\scripts\postprovision.ps1'. : exit code: 1, stdout: , stderr: 'pwsh' is not recognized as an internal or external command, operable program or batch file.
-   ```
-    - Make sure you have the latest version of PowerShell installed.
-
-2. PasswordTooShort
+1. PasswordTooShort error when deploying the infrastructure
    ```commandline
    PasswordTooShort: Password validation failed. The password does not meet policy requirements because it is too short.
    ```
