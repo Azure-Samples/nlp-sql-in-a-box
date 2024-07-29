@@ -1,39 +1,3 @@
-/*region Header
-      =========================================================================================================
-      Created by:       Author: Your Name | your.name@azurestream.io 
-      Description:      AOAI in-a-box - Deploy AOAI NLP to SQL Accelerator
-      =========================================================================================================
-
-      Dependencies:
-        Install Azure CLI
-        https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest 
-
-        Install Latest version of Bicep
-        https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install
-      
-        To Run:
-        az login
-        az account set --subscription <subscription id>
-        az group create --name <your resource group name> --location <your resource group location>
-        az ad user show --id 'your email' --query id
-
-        az bicep build --file main.bicep
-        az deployment group create --resource-group <your resource group name>  --template-file main.bicep --parameters main.bicepparam --name Doc-intelligence-in-a-Box --query 'properties.outputs' 
-      
-        SCRIPT STEPS 
-        1. Create Resource Group
-        2. Deploy UAMI
-        3. Deploy OpenAI
-        4. Deploy Speech Service
-        5. Deploy SQL Server
-        6. Deploy SQL Database
-      //=====================================================================================
-
-*/
-
-//********************************************************
-// Global Parameters
-//********************************************************
 targetScope = 'subscription'
 
 @minLength(1)
@@ -47,101 +11,91 @@ param location string
 
 param resourceGroupName string = ''
 
-var abbrs = loadJsonContent('abbreviations.json')
-var uniqueSuffix = substring(uniqueString(subscription().id, resourceGroup.id), 1, 3) 
-
 param tags object
-
-//UAMI Module Parameters
-param msiName string = ''
 
 //OpenAI Module Parameters
 param openaiName string = ''
-@allowed(['gpt-35-turbo'])
+@allowed(['gpt-4o'])
 param gptModel string
-@allowed(['0301'])
+@allowed(['2024-05-13'])
 param gptVersion string
-param deployDalle3 bool = false
 
 //SQL Module Parameters
-@description('Deploy SQL Database? (required for SQL Plugin demo)')
-param deploySQL bool = true
 param sqlServerName string = ''
 param sqlDatabaseName string = ''
 @description('Set the administrator login for the SQL Server')
-@secure()
 param administratorLogin string
-@description('Set the administrator login password for the SQL Server')
 @secure()
+@minLength(8)
+@description('Set the administrator login password for the SQL Server')
 param administratorLoginPassword string
 
 //Speech Module Parameters
 param speechServiceName string = ''
-@description('Deploy Azure AI Speech service? (required for Text to Speech and Speech to Text Plugin demo)')
-param deploySpeechService bool = true
 
-@allowed(['Enabled', 'Disabled'])
-param publicNetworkAccess string = 'Enabled'
+var abbrs = loadJsonContent('abbreviations.json')
+var uniqueSuffix = substring(uniqueString(subscription().id, environmentName), 1, 5)
+
+var names = {
+    resourceGroupName: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${uniqueSuffix}'
+    openaiName: !empty(openaiName) ? openaiName : '${abbrs.cognitiveServicesOpenAI}${environmentName}-${uniqueSuffix}'
+    speechServiceName: !empty(speechServiceName) ? speechServiceName : '${abbrs.cognitiveServicesSpeech}${environmentName}-${uniqueSuffix}'
+    sqlServerName: !empty(sqlServerName) ? sqlServerName : '${abbrs.sqlServers}${environmentName}-${uniqueSuffix}'
+    sqlDatabaseName: !empty(sqlDatabaseName) ? sqlDatabaseName : '${abbrs.sqlServersDatabases}${environmentName}-${uniqueSuffix}'
+}
 
 
-//====================================================================================
-// Create Resource Group 
-//====================================================================================
+// 1. Create resource group
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
+  name: names.resourceGroupName
   location: location
   tags: tags
 }
 
-//2. Deploy UAMI
-module m_msi 'modules/msi.bicep' = {
-  name: 'deploy_msi'
-  scope: resourceGroup
-  params: {
-    location: location
-    msiName: !empty(msiName) ? msiName : '${abbrs.managedIdentityUserAssignedIdentities}${environmentName}-${uniqueSuffix}'
-    tags: tags
-  }
-}
 
-//3. Deploy OpenAI
+// 2. Deploy OpenAI
 module m_openai 'modules/openai.bicep' = {
   name: 'deploy_openai'
   scope: resourceGroup
   params: {
     location: location
-    openaiName: !empty(openaiName) ? openaiName : '${abbrs.cognitiveServicesOpenAI}${environmentName}-${uniqueSuffix}'
+    openaiName: names.openaiName
     gptModel: gptModel
     gptVersion: gptVersion
-    msiPrincipalID: m_msi.outputs.msiPrincipalID
-    publicNetworkAccess: publicNetworkAccess
-    deployDalle3: deployDalle3
     tags: tags
   }
 }
 
-//4. Deploy Speech Service
-module m_speech 'modules/speech.bicep' = if (deploySpeechService) {
+// 3. Deploy Speech Service
+module m_speech 'modules/speech.bicep' = {
   name: 'deploy_speech'
   scope: resourceGroup
   params: {
     location: location
-    speechServiceName: !empty(speechServiceName) ? speechServiceName : '${abbrs.cognitiveServicesSpeech}${environmentName}-${uniqueSuffix}'
+    speechServiceName: names.speechServiceName
     tags: tags
   }
 }
 
-//5. Deploy SQL Server/SQL Database
+//4. Deploy SQL Server and Database
 module m_sql 'modules/sql.bicep' = {
   name: 'deploy_sql'
   scope: resourceGroup
   params: {
     location: location
-    sqlServerName: !empty(sqlServerName) ? sqlServerName : '${abbrs.sqlServers}${environmentName}-${uniqueSuffix}'
-    sqlDatabaseName: !empty(sqlDatabaseName) ? sqlDatabaseName : '${abbrs.sqlServersDatabases}${environmentName}-${uniqueSuffix}'
+    sqlServerName: names.sqlServerName
+    sqlDatabaseName: names.sqlDatabaseName
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
+    tags: tags
   }
 }
 
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
+output SQL_SERVER_NAME string = m_sql.outputs.serverName
+output SQL_DATABASE_NAME string = m_sql.outputs.databaseName
+output SQL_USERNAME string = administratorLogin
+output SPEECH_SERVICE_API_KEY string = m_speech.outputs.apiKey
+output AZURE_OPENAI_CHAT_DEPLOYMENT_NAME string = m_openai.outputs.deploymentName
+output AZURE_OPENAI_API_KEY string = m_openai.outputs.apiKey
+output AZURE_OPENAI_ENDPOINT string = m_openai.outputs.endpoint

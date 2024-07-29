@@ -1,13 +1,7 @@
-/*region Header
-      Module Steps 
-      1 - Create SQL Server
-      2 - Create SQL Database
-*/
-
-//Declare Parameters--------------------------------------------------------------------------------------------------------------------------
 param location string
 param sqlServerName string
 param sqlDatabaseName string
+param tags object = {}
 
 @description('Set the administrator login for the SQL Server')
 @secure()
@@ -21,14 +15,21 @@ resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
   name: sqlServerName
   location: location
   properties: {
-    administratorLogin: administratorLogin // Set the administrator login for the SQL Server
-    administratorLoginPassword: administratorLoginPassword // Set the administrator login password for the SQL Server
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
   }
+  tags: tags
 }
 
 // Create SQL Database resource
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
-  parent: sqlServer // Set the parent resource to the SQL Server
-  name: sqlDatabaseName // Set the name of the SQL Database
-  location: location  // Set the location of the SQL Database
+  parent: sqlServer
+  name: sqlDatabaseName
+  location: location
+  tags: tags
 }
+
+output serverId string = sqlServer.id
+output serverName string = sqlServer.name
+output databaseId string = sqlDatabase.id
+output databaseName string = sqlDatabase.name
