@@ -1,6 +1,7 @@
 //Declare Parameters--------------------------------------------------------------------------------------------------------------------------
 param location string
 param principalId string
+param ipAddress string
 param openaiName string
 param tags object = {}
 
@@ -17,11 +18,14 @@ resource openaiService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
     apiProperties: {
       statisticsEnabled: false
     }
-    networkAcls: {
-      defaultAction: 'Allow'
-    }
-    publicNetworkAccess: 'Enabled'
-    disableLocalAuth: true
+    disableLocalAuth: true // do not support api key authentication
+    publicNetworkAccess: (ipAddress != '') ? 'Enabled' : 'Disabled'
+    networkAcls: (ipAddress != '') ? {
+      defaultAction: 'Deny'
+      ipRules: [
+          {value: ipAddress}
+      ]
+    } : null
   }
 }
 

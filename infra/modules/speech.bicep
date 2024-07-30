@@ -1,6 +1,7 @@
 param location string
 param speechServiceName string
 param principalId string
+param ipAddress string
 param tags object = {}
 
 // Create Speech Service resource
@@ -14,7 +15,14 @@ resource speechService 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
   }
   properties: {
     customSubDomainName: speechServiceName // Set the custom subdomain name for the Speech Service
-    disableLocalAuth: true
+    disableLocalAuth: true // do not support api key authentication
+    publicNetworkAccess: (ipAddress != '') ? 'Enabled' : 'Disabled'
+    networkAcls: (ipAddress != '') ? {
+      defaultAction: 'Deny'
+      ipRules: [
+          {value: ipAddress}
+      ]
+    } : null
   }
   tags: tags
 }

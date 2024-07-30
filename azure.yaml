@@ -10,3 +10,11 @@ hooks:
     posix:
       shell: sh
       run: azd env set PRINCIPAL_ID $(az ad signed-in-user show --query id -o tsv)
+  postup:
+    # updates the .env file with the values from the azd environment
+    windows:
+      shell: pwsh
+      run: azd env get-values > .env
+    posix:
+      shell: sh
+      run: azd env get-values > .env

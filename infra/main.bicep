@@ -29,8 +29,8 @@ param sqlServerName string = ''
 param sqlDatabaseName string = ''
 @description('Set the administrator login for the SQL Server')
 param administratorLogin string
-@description('Your IPv4 address. You can check it at https://www.whatismyip.com/')
-param ipAddress string
+@description('IP address to allow for SQL Server connection')
+param ipAddress string = ''
 
 //Speech Module Parameters
 @description('Speech service resource name')
@@ -63,6 +63,7 @@ module m_openai 'modules/openai.bicep' = {
   params: {
     location: location
     principalId: principalId
+    ipAddress: ipAddress
     openaiName: names.openaiName
     tags: tags
   }
@@ -75,6 +76,7 @@ module m_speech 'modules/speech.bicep' = {
   params: {
     location: location
     principalId: principalId
+    ipAddress: ipAddress
     speechServiceName: names.speechServiceName
     tags: tags
   }

@@ -1,4 +1,5 @@
 openai== 1.37.1
+azure-identity==1.17.1
 azure.cognitiveservices.speech==1.38.0
 python-dotenv== 1.0.1
 semantic-kernel==1.0.5

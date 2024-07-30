@@ -2,15 +2,15 @@
 
 <!-- <div style="display: flex;">
   <div style="width: 70%;">
-    This solution is part of the the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.
+    This solution is part of the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.
   </div>
   <div style="width: 30%;">
     <img src="./media/ai-in-a-box.png" alt="AI-in-a-box Project Logo: Description" style="width: 10%">
   </div>
 </div> -->
-|||
-|:---| ---:|
-|This solution is part of the the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.| <img src="./media/ai-in-a-box.png" alt="AI-in-a-box Logo: Description" style="width: 70%"> |
+|                                                                                                                                                                                                                                                                                                                                  ||
+|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ---:|
+| This solution is part of the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.| <img src="./media/ai-in-a-box.png" alt="AI-in-a-box Logo: Description" style="width: 70%"> |
 
 ## User Story
 
@@ -33,6 +33,11 @@ And with Azure Speech Services, we will convert your speech into text and synthe
   - [OpenAI Service and Deployment](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
   - [Speech Services](https://azure.microsoft.com/en-us/products/ai-services/ai-speech)
   - [SQL Server](https://azure.microsoft.com/en-us/products/azure-sql/database/)
+- Resources are deployed and used with security best practices in mind
+  - Speech and OpenAI services do not allow api keys access
+  - SQL Server requires Active Directory authentication
+  - Required RBAC roles are assigned to the user deploying the solution
+  - Application connects to all services using azure credential
 
 This solution was adapted from the [Revolutionizing SQL Queries with Azure Open AI and Semantic Kernel](https://techcommunity.microsoft.com/t5/analytics-on-azure-blog/revolutionizing-sql-queries-with-azure-open-ai-and-semantic/ba-p/3913513) blog post.
 
@@ -45,7 +50,7 @@ This solution can be adapted for many other use cases. Here are some ideas:
 
 ## Deploy the Solution
 
-### Pre-requisites
+### Deploy Pre-requisites
 1. An [Azure subscription](https://azure.microsoft.com/en-us/free/)
 2. Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest)
 3. Install [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
@@ -61,7 +66,11 @@ This solution can be adapted for many other use cases. Here are some ideas:
 
     `azd up`
 
-You will be prompted for an environment name, a subscription and a region. Select the appropriate values.
+You will be prompted for:
+- environment name
+- azure subscription
+- azure region
+- database administrator login
 
 ### Clean up
 To remove all resources created by this solution, run:
@@ -70,11 +79,18 @@ To remove all resources created by this solution, run:
 
 ## Run the Solution
 
-### Pre-requisites
+### Run Pre-requisites
 1. Install Python 3.10
 2. Install [ODBC Driver for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server) 
-3. Set environment variables in `.env` 
-   - After successfully deploying to azure with `azd up` you will find the values in `.azure/<env_name>/.env` file
+3. Make sure you can access the resources deployed from your local machine. 
+   - By default, all resources were created with no public access.
+   - You can allow your own IP address to access the resources by:
+        - Find out your what's your IPv4 address
+        - `azd env set IP_ADDRESS <ip_address>`
+        - `azd up`
+4. Install requirements
+    
+        `pip install -r src/requirements.txt`
 
 ### Run Locally
 
@@ -139,7 +155,7 @@ User > No.
 ### Add More Plugins
 You can add more plugins by:
 1. Creating a new Python file in the `src/plugins` directory
-2. Implementing your plugin as a class 
+2. Implementing your plugin as a class (more details in [Plugins](https://learn.microsoft.com/en-us/semantic-kernel/concepts/plugins/?pivots=programming-language-python))
 
 ### Reusing the Kernel
 If you want to reuse this logic in another project, it is really easy, You just need to reuse the src/kernel package in your project, passing the required parameters.
@@ -156,9 +172,9 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 Highlight the main contacts for the project and acknowledge contributors. You can adapt the structure from AI-in-a-Box:
 
-| Contact | GitHub ID | Email |
-|---------|-----------|-------|
-| ??      | ??        | ??    |
+| Contact            | GitHub ID           | Email                    |
+|--------------------|---------------------|--------------------------|
+| Franklin Guimaraes | @franklinlindemberg | fguimaraes@microsoft.com |
 
 
 ## License
@@ -167,11 +183,12 @@ This project may contain trademarks or logos for projects, products, or services
 
 ## FAQ
 
-1. PasswordTooShort error when deploying the infrastructure
-   ```commandline
-   PasswordTooShort: Password validation failed. The password does not meet policy requirements because it is too short.
-   ```
-    - The password you provided for the database is too short. Make sure it is at least 8 characters long.
+1. ```commandline
+    Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (11001)')
+    ```
+   This error is due to the fact that the SQL Server is not accessible from the machine where the application is running. Check [Run Pre-requisites](#run-pre-requisites) for more details.
+
+
 ---
 
 This project is part of the AI-in-a-Box series, aimed at providing the technical community with tools and accelerators to implement AI/ML solutions efficiently and effectively.

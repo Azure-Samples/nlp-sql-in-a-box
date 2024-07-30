@@ -11,6 +11,9 @@
       "principalId": {
         "value": "${PRINCIPAL_ID}"
       },
+      "ipAddress": {
+        "value": "${IP_ADDRESS}"
+      },
       "resourceGroupName": {
         "value": "${AZURE_RG_NAME}"
       },

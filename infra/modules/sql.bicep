@@ -21,7 +21,7 @@ resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
         sid: principalId
         tenantId: subscription().tenantId
     }
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: (ipAddress != '') ? 'Enabled' : 'Disabled'
   }
   tags: tags
 }
@@ -35,7 +35,7 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
 }
 
 
-resource sqlAllowLocalConnection 'Microsoft.Sql/servers/firewallRules@2020-11-01-preview' = {
+resource sqlAllowLocalConnection 'Microsoft.Sql/servers/firewallRules@2020-11-01-preview' = if (ipAddress != '') {
   name: 'AllowLocalConnection'
   parent: sqlServer
   properties: {
