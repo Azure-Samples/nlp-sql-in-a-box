@@ -29,10 +29,8 @@ param sqlServerName string = ''
 param sqlDatabaseName string = ''
 @description('Set the administrator login for the SQL Server')
 param administratorLogin string
-@secure()
-@minLength(8)
-@description('Set the administrator login password for the SQL Server')
-param administratorLoginPassword string
+@description('Your IPv4 address. You can check it at https://www.whatismyip.com/')
+param ipAddress string
 
 //Speech Module Parameters
 @description('Speech service resource name')
@@ -89,10 +87,10 @@ module m_sql 'modules/sql.bicep' = {
   params: {
     location: location
     principalId: principalId
+    ipAddress: ipAddress
     sqlServerName: names.sqlServerName
     sqlDatabaseName: names.sqlDatabaseName
     administratorLogin: administratorLogin
-    administratorLoginPassword: administratorLoginPassword
     tags: tags
   }
 }

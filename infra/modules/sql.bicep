@@ -2,14 +2,12 @@ param location string
 param principalId string
 param sqlServerName string
 param sqlDatabaseName string
+param ipAddress string
 param tags object = {}
 
 @description('Set the administrator login for the SQL Server')
 @secure()
 param administratorLogin string
-@description('Set the administrator login password for the SQL Server')
-@secure()
-param administratorLoginPassword string
 
 // Create SQL Server resource
 resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
@@ -17,7 +15,7 @@ resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
   location: location
   properties: {
     administrators: {
-        login: 'admin'
+        login: administratorLogin
         principalType: 'User'
         azureADOnlyAuthentication: true // enforces Azure AD authentication
         sid: principalId
@@ -34,6 +32,16 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
   name: sqlDatabaseName
   location: location
   tags: tags
+}
+
+
+resource sqlAllowLocalConnection 'Microsoft.Sql/servers/firewallRules@2020-11-01-preview' = {
+  name: 'AllowLocalConnection'
+  parent: sqlServer
+  properties: {
+    startIpAddress: ipAddress
+    endIpAddress: ipAddress
+  }
 }
 
 output serverName string = sqlServer.name
