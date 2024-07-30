@@ -1,6 +1,7 @@
 import logging
 
-import pyodbc
+import pyodbc, struct
+from azure.identity import DefaultAzureCredential
 from faker import Faker
 
 from .utils import table_exists, create_table, insert_record
@@ -8,16 +9,20 @@ from .utils import table_exists, create_table, insert_record
 
 logger = logging.getLogger(__name__)
 
+scope = 'https://database.windows.net/.default'
+
 
 # If you have issues connecting, make sure you have the correct driver installed
 # ODBC Driver for SQL Server - https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server
-connection_string = 'DRIVER={driver};SERVER={server_name};DATABASE={database_name};UID={username};PWD={password}'
+connection_string_template = 'DRIVER={driver};SERVER=tcp:{server_name}.database.windows.net,1433;DATABASE={database_name}'
 driver = 'ODBC Driver 18 for SQL Server'
 
 
 class Database:
-    def __init__(self, server_name: str, database_name: str, username: str, password: str):
-        self.conn = pyodbc.connect(connection_string.format(driver=driver, server_name=server_name, database_name=database_name, username=username, password=password))
+    def __init__(self, server_name: str, database_name: str, credential: DefaultAzureCredential) -> None:
+        token = credential.get_token(scope).token
+
+        self.conn = get_connection(server_name=server_name, database_name=database_name, token=token)
 
     def setup(self) -> None:
         """
@@ -64,3 +69,13 @@ class Database:
             cursor.close()
 
         return result
+
+
+def get_connection(server_name: str, database_name: str, token: str) -> pyodbc.Connection:
+    # see https://learn.microsoft.com/en-us/azure/azure-sql/database/azure-sql-python-quickstart
+    token_bytes = token.encode("UTF-16-LE")
+    token_struct = struct.pack(f'<I{len(token_bytes)}s', len(token_bytes), token_bytes)
+    SQL_COPT_SS_ACCESS_TOKEN = 1256  # This connection option is defined by microsoft in msodbcsql.h
+
+    connection_string = connection_string_template.format(driver=driver, server_name=server_name, database_name=database_name)
+    return pyodbc.connect(connection_string, attrs_before={SQL_COPT_SS_ACCESS_TOKEN: token_struct})

@@ -1,15 +1,20 @@
 import logging
 
+from azure.identity import DefaultAzureCredential
 from azure.cognitiveservices.speech import SpeechConfig, SpeechRecognizer,SpeechSynthesizer,  ResultReason, CancellationReason
 from azure.cognitiveservices.speech.audio import AudioConfig, AudioOutputConfig
 
 
 logger = logging.getLogger(__name__)
 
+# see https://learn.microsoft.com/en-us/azure/ai-services/speech-service/how-to-configure-azure-ad-auth?tabs=portal&pivots=programming-language-python#get-a-microsoft-entra-access-token
+scope = 'https://cognitiveservices.azure.com/.default'
+
 
 class Speech:
-    def __init__(self, key: str, region: str) -> None:
-        speech_config = SpeechConfig(subscription=key, region=region, speech_recognition_language="en-US")
+    def __init__(self, credential: DefaultAzureCredential, resource_id: str, region: str) -> None:
+        auth_token = 'aad#{}#{}'.format(resource_id, credential.get_token(scope).token)
+        speech_config = SpeechConfig(auth_token=auth_token, region=region, speech_recognition_language="en-US")
 
         self._recognizer = SpeechRecognizer(speech_config=speech_config, audio_config=AudioConfig(use_default_microphone=True))
         self._synthesizer = SpeechSynthesizer(speech_config=speech_config, audio_config=AudioOutputConfig(use_default_speaker=True))

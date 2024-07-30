@@ -1,9 +1,10 @@
 //Declare Parameters--------------------------------------------------------------------------------------------------------------------------
 param location string
+param principalId string
 param openaiName string
 param tags object = {}
 
-resource openai 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
+resource openaiService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: openaiName
   location: location
   tags: tags
@@ -20,11 +21,12 @@ resource openai 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
       defaultAction: 'Allow'
     }
     publicNetworkAccess: 'Enabled'
+    disableLocalAuth: true
   }
 }
 
 resource gptDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
-  parent: openai
+  parent: openaiService
   name: 'gpt-4o'
   properties: {
     model: {
@@ -39,7 +41,19 @@ resource gptDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05
   }
 }
 
-output id string = openai.id
-output endpoint string = openai.properties.endpoint
+resource openaiServiceUserRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // Cognitive Services OpenAI User
+}
+
+resource openaiServiceRBAC 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(principalId, openaiService.id, openaiServiceUserRole.id)
+  properties: {
+    description: 'User role assignment for OpenAI Service'
+    principalId: principalId
+    principalType: 'User'
+    roleDefinitionId: openaiServiceUserRole.id
+  }
+}
+
+output endpoint string = openaiService.properties.endpoint
 output deploymentName string = gptDeployment.name
-output apiKey string = openai.listKeys().key1

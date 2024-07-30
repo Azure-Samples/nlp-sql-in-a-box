@@ -1,3 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
 name: nlpsql-in-a-box
+hooks:
+  preup:
+    # sets the PRINCIPAL_ID environment variable to the signed-in user's id
+    windows:
+      shell: pwsh
+      run: azd env set PRINCIPAL_ID $(az ad signed-in-user show --query id -o tsv)
+    posix:
+      shell: sh
+      run: azd env set PRINCIPAL_ID $(az ad signed-in-user show --query id -o tsv)

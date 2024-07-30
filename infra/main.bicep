@@ -6,18 +6,26 @@ targetScope = 'subscription'
 param environmentName string
 
 @minLength(1)
-@description('Primary location for all resources')
+@description('Primary location for all resources (for example US EAST 2)')
 param location string
 
+@description('Resource group name')
 param resourceGroupName string = ''
 
+@description('User\'s principal id')
+param principalId string
+
+@description('Tags to be used for all resources')
 param tags object
 
 //OpenAI Module Parameters
+@description('OpenAI resource name')
 param openaiName string = ''
 
 //SQL Module Parameters
+@description('SQL Server resource name')
 param sqlServerName string = ''
+@description('Database name')
 param sqlDatabaseName string = ''
 @description('Set the administrator login for the SQL Server')
 param administratorLogin string
@@ -27,13 +35,14 @@ param administratorLogin string
 param administratorLoginPassword string
 
 //Speech Module Parameters
+@description('Speech service resource name')
 param speechServiceName string = ''
 
 var abbrs = loadJsonContent('abbreviations.json')
 var uniqueSuffix = substring(uniqueString(subscription().id, environmentName), 1, 5)
 
 var names = {
-    resourceGroupName: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${uniqueSuffix}'
+    resourceGroupName: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
     openaiName: !empty(openaiName) ? openaiName : '${abbrs.cognitiveServicesOpenAI}${environmentName}-${uniqueSuffix}'
     speechServiceName: !empty(speechServiceName) ? speechServiceName : '${abbrs.cognitiveServicesSpeech}${environmentName}-${uniqueSuffix}'
     sqlServerName: !empty(sqlServerName) ? sqlServerName : '${abbrs.sqlServers}${environmentName}-${uniqueSuffix}'
@@ -55,6 +64,7 @@ module m_openai 'modules/openai.bicep' = {
   scope: resourceGroup
   params: {
     location: location
+    principalId: principalId
     openaiName: names.openaiName
     tags: tags
   }
@@ -66,6 +76,7 @@ module m_speech 'modules/speech.bicep' = {
   scope: resourceGroup
   params: {
     location: location
+    principalId: principalId
     speechServiceName: names.speechServiceName
     tags: tags
   }
@@ -77,6 +88,7 @@ module m_sql 'modules/sql.bicep' = {
   scope: resourceGroup
   params: {
     location: location
+    principalId: principalId
     sqlServerName: names.sqlServerName
     sqlDatabaseName: names.sqlDatabaseName
     administratorLogin: administratorLogin
@@ -85,11 +97,8 @@ module m_sql 'modules/sql.bicep' = {
   }
 }
 
-output AZURE_RESOURCE_GROUP string = resourceGroup.name
 output SQL_SERVER_NAME string = m_sql.outputs.serverName
 output SQL_DATABASE_NAME string = m_sql.outputs.databaseName
-output SQL_USERNAME string = administratorLogin
-output SPEECH_SERVICE_API_KEY string = m_speech.outputs.apiKey
+output SPEECH_SERVICE_ID string = m_speech.outputs.id
 output AZURE_OPENAI_CHAT_DEPLOYMENT_NAME string = m_openai.outputs.deploymentName
-output AZURE_OPENAI_API_KEY string = m_openai.outputs.apiKey
 output AZURE_OPENAI_ENDPOINT string = m_openai.outputs.endpoint

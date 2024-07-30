@@ -1,4 +1,5 @@
 param location string
+param principalId string
 param sqlServerName string
 param sqlDatabaseName string
 param tags object = {}
@@ -15,8 +16,14 @@ resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
   name: sqlServerName
   location: location
   properties: {
-    administratorLogin: administratorLogin
-    administratorLoginPassword: administratorLoginPassword
+    administrators: {
+        login: 'admin'
+        principalType: 'User'
+        azureADOnlyAuthentication: true // enforces Azure AD authentication
+        sid: principalId
+        tenantId: subscription().tenantId
+    }
+    publicNetworkAccess: 'Enabled'
   }
   tags: tags
 }
@@ -29,7 +36,5 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
   tags: tags
 }
 
-output serverId string = sqlServer.id
 output serverName string = sqlServer.name
-output databaseId string = sqlDatabase.id
 output databaseName string = sqlDatabase.name

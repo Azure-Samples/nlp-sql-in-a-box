@@ -1,6 +1,7 @@
 import os
 import logging
 
+from azure.identity import DefaultAzureCredential
 from semantic_kernel import Kernel as SemanticKernel
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from semantic_kernel.functions import KernelArguments
@@ -17,13 +18,16 @@ from src.database import Database
 
 logger = logging.getLogger(__name__)
 
+# see https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/managed-identity
+scope = 'https://cognitiveservices.azure.com/.default'
+
 
 class Kernel:
-    def __init__(self, database_service: Database, openai_api_key: str, openai_endpoint: str, openai_deployment_name: str) -> None:
+    def __init__(self, database_service: Database, credential: DefaultAzureCredential, openai_endpoint: str, openai_deployment_name: str) -> None:
         # Create a new kernel
         self.kernel = SemanticKernel()
         # Create a chat completion service
-        self.chat_completion = AzureChatCompletion(api_key=openai_api_key, endpoint=openai_endpoint, deployment_name=openai_deployment_name)
+        self.chat_completion = AzureChatCompletion(ad_token=credential.get_token(scope).token, endpoint=openai_endpoint, deployment_name=openai_deployment_name)
 
         # Add Azure OpenAI chat completion
         self.kernel.add_service(self.chat_completion)

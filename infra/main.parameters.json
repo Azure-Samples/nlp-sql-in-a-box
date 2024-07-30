@@ -8,6 +8,9 @@
       "location": {
         "value": "${AZURE_LOCATION}"
       },
+      "principalId": {
+        "value": "${PRINCIPAL_ID}"
+      },
       "resourceGroupName": {
         "value": "${AZURE_RG_NAME}"
       },
