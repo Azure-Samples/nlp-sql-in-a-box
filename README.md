@@ -69,7 +69,7 @@ This solution can be adapted for many other use cases. Here are some ideas:
 You will be prompted for:
 - environment name
 - azure subscription
-- azure region
+- azure region (we suggest using `eastus2`)
 - database administrator login
 
 ### Clean up
