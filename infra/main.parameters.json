@@ -8,8 +8,14 @@
       "location": {
         "value": "${AZURE_LOCATION}"
       },
+      "principalId": {
+        "value": "${PRINCIPAL_ID}"
+      },
+      "ipAddress": {
+        "value": "${IP_ADDRESS}"
+      },
       "resourceGroupName": {
-        "value": "aibx-nlpsql-rg"
+        "value": "${AZURE_RG_NAME}"
       },
       "gptModel": {
         "value": "${AZURE_GPT_MODEL}"
@@ -20,8 +26,8 @@
       "sqlServerName": {
         "value": "${AZURE_SQL_SERVER_NAME}"
       },
-      "sqlDBName": {
-        "value": "${AZURE_SQL_DB_NAME}"
+      "sqlDatabaseName": {
+        "value": "${AZURE_SQL_DATABASE_NAME}"
       },
       "speechServiceName": {
         "value": "${AZURE_SPEECH_SERVICE_NAME}"

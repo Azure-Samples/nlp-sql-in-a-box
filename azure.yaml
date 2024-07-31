@@ -1,16 +1,20 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
 name: nlpsql-in-a-box
-metadata:
-    template: azd-init@0.0.1-beta
-infra:
-  provider: "bicep"
-  path: "infra"
-  module: "main"
 hooks:
-    postprovision:
-        windows:
-            shell: pwsh
-            run: ./scripts/postprovision.ps1
-            continueOnError: false
-            interactive: false
+  preup:
+    # sets the PRINCIPAL_ID environment variable to the signed-in user's id
+    windows:
+      shell: pwsh
+      run: azd env set PRINCIPAL_ID $(az ad signed-in-user show --query id -o tsv)
+    posix:
+      shell: sh
+      run: azd env set PRINCIPAL_ID $(az ad signed-in-user show --query id -o tsv)
+  postup:
+    # updates the .env file with the values from the azd environment
+    windows:
+      shell: pwsh
+      run: azd env get-values > .env
+    posix:
+      shell: sh
+      run: azd env get-values > .env

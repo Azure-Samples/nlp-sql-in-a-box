@@ -1,31 +1,44 @@
-/*region Header
-      Module Steps 
-      1 - Create Speech Service
-*/
-
-//Declare Parameters--------------------------------------------------------------------------------------------------------------------------
 param location string
 param speechServiceName string
+param principalId string
+param ipAddress string
 param tags object = {}
 
 // Create Speech Service resource
 resource speechService 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
-  name: speechServiceName // Set the name of the Speech Service
-  location: location // Set the location of the Speech Service
-  kind: 'SpeechServices' // Set the kind of the Speech Service to SpeechServices
+  name: speechServiceName
+  location: location
+  kind: 'SpeechServices'
   sku: {
-    name: 'S0' // Set the SKU name to S0
-    tier: 'Standard' // Set the SKU tier to Standard
+    name: 'S0'
+    tier: 'Standard'
   }
   properties: {
     customSubDomainName: speechServiceName // Set the custom subdomain name for the Speech Service
+    disableLocalAuth: true // do not support api key authentication
+    publicNetworkAccess: (ipAddress != '') ? 'Enabled' : 'Disabled'
+    networkAcls: (ipAddress != '') ? {
+      defaultAction: 'Deny'
+      ipRules: [
+          {value: ipAddress}
+      ]
+    } : null
   }
   tags: tags
-  identity: {
-    type: 'SystemAssigned' // Enable managed identity for the Speech Service
+}
+
+resource speechServiceUserRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: 'f2dc8367-1007-4938-bd23-fe263f013447' // Cognitive Services Speech User
+}
+
+resource speechServiceRBAC 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(principalId, speechService.id, speechServiceUserRole.id)
+  properties: {
+    description: 'User role assignment for Speech Service'
+    principalId: principalId
+    principalType: 'User'
+    roleDefinitionId: speechServiceUserRole.id
   }
 }
 
-output speechServiceID string = speechService.id
-output speechServiceName string = speechService.name
-output speechServiceEndpoint string = speechService.properties.endpoint
+output id string = speechService.id

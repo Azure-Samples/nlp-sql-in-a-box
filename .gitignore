@@ -1,0 +1,8 @@
+.azure
+.env
+
+__pycache__/
+
+.idea/
+
+*.log
