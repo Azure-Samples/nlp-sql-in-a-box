@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16333608228133478182"
+      "templateHash": "4015609571791161378"
     }
   },
   "parameters": {
@@ -15,13 +15,6 @@
       "maxLength": 64,
       "metadata": {
         "description": "Name of the the environment which is used to generate a short unique hash used in all resources."
-      }
-    },
-    "location": {
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Primary location for all resources (for example US EAST 2)"
       }
     },
     "resourceGroupName": {
@@ -39,6 +32,7 @@
     },
     "tags": {
       "type": "object",
+      "defaultValue": {},
       "metadata": {
         "description": "Tags to be used for all resources"
       }
@@ -229,6 +223,7 @@
       "webSitesFunctions": "func-",
       "webStaticSites": "stapp-"
     },
+    "location": "[deployment().location]",
     "abbrs": "[variables('$fxv#0')]",
     "uniqueSuffix": "[substring(uniqueString(subscription().id, parameters('environmentName')), 1, 5)]",
     "names": {
@@ -244,7 +239,7 @@
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2023-07-01",
       "name": "[variables('names').resourceGroupName]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "tags": "[parameters('tags')]"
     },
     {
@@ -259,7 +254,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "principalId": {
             "value": "[parameters('principalId')]"
@@ -385,7 +380,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "principalId": {
             "value": "[parameters('principalId')]"
@@ -486,7 +481,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           },
           "principalId": {
             "value": "[parameters('principalId')]"
