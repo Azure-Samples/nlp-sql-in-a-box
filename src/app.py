@@ -1,5 +1,4 @@
 import os
-import asyncio
 import logging
 
 from dotenv import load_dotenv
@@ -7,10 +6,10 @@ from azure.identity import DefaultAzureCredential
 from semantic_kernel.contents.chat_history import ChatHistory
 
 
-from speech import Speech
-from kernel import Kernel
-from database import Database
-from orchestrator import Orchestrator
+from .speech import Speech
+from .kernel import Kernel
+from .database import Database
+from .orchestrator import Orchestrator
 
 
 logging.basicConfig(
@@ -48,7 +47,3 @@ async def main():
     orchestrator = Orchestrator(speech_service=speech_service, kernel=kernel)
 
     await orchestrator.run(chat_history=chat_history)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

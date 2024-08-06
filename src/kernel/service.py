@@ -13,7 +13,7 @@ from semantic_kernel.connectors.ai.open_ai.prompt_execution_settings.azure_chat_
 from semantic_kernel.contents.author_role import AuthorRole
 from semantic_kernel.contents.finish_reason import FinishReason
 
-from src.database import Database
+from ..database import Database
 
 
 logger = logging.getLogger(__name__)
