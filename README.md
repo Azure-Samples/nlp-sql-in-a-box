@@ -1,14 +1,6 @@
-# AI-in-a-Box Accelerator Name
+# NLP-SQL-in-a-Box
 
-<!-- <div style="display: flex;">
-  <div style="width: 70%;">
-    This solution is part of the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.
-  </div>
-  <div style="width: 30%;">
-    <img src="./media/ai-in-a-box.png" alt="AI-in-a-box Project Logo: Description" style="width: 10%">
-  </div>
-</div> -->
-|                                                                                                                                                                                                                                                                                                                                  ||
+|||
 |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ---:|
 | This solution is part of the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.| <img src="./media/ai-in-a-box.png" alt="AI-in-a-box Logo: Description" style="width: 70%"> |
 
@@ -58,7 +50,7 @@ This solution can be adapted for many other use cases. Here are some ideas:
 
 ### UI Deploy
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fnlp-sql-in-a-box%2Ffranklin%2Fadd_devcontainer%2Finfra%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fnlp-sql-in-a-box%2Fmain%2Finfra%2Fazuredeploy.json)
 
 #### Required Input Parameters
 The parameters below are required in order to deploy the infrastructure.
