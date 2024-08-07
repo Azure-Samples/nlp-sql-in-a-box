@@ -1,4 +1,5 @@
 import os
+import asyncio
 import logging
 
 from dotenv import load_dotenv
@@ -13,7 +14,6 @@ from .orchestrator import Orchestrator
 
 
 logging.basicConfig(
-    filename="app.log",
     format="[%(asctime)s - %(name)s:%(lineno)d - %(levelname)s] %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     level=logging.INFO,
@@ -47,3 +47,7 @@ async def main():
     orchestrator = Orchestrator(speech_service=speech_service, kernel=kernel)
 
     await orchestrator.run(chat_history=chat_history)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
