@@ -12,6 +12,7 @@ We will use the power of Azure Open AI and Semantic Kernel to translate your nat
 
 And with Azure Speech Services, we will convert your speech into text and synthesize the results as speech. This means that you can hear the results of your query spoken back to you, making it easier to understand and digest the information.
 
+![](./media/banner-nlp-to-sql-in-a-box.png)
 
 ## What's in the Box
 <img src="./architecture/nlp_to_sql_architecture.png" />
@@ -92,6 +93,8 @@ az bicep build --file infra/main.bicep --outfile infra/azuredeploy.json
     `git clone https://github.com/Azure-Samples/gpt-video-analysis-in-a-box`  
 2. Deploy resources
 
+    `az login`
+
     `azd auth login`
 
     `azd up`
@@ -122,7 +125,7 @@ To remove all resources created by this solution, run:
         - `azd up`
 4. Install requirements
     
-        `pip install -r src/requirements.txt`
+  `pip install -r src/requirements.txt`
 
 ### Run Locally
 
