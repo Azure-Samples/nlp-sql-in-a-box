@@ -14,6 +14,7 @@ from .orchestrator import Orchestrator
 
 
 logging.basicConfig(
+    filename="app.log",
     format="[%(asctime)s - %(name)s:%(lineno)d - %(levelname)s] %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     level=logging.INFO,
