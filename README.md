@@ -1,14 +1,6 @@
-# AI-in-a-Box Accelerator Name
+# NLP-SQL-in-a-Box
 
-<!-- <div style="display: flex;">
-  <div style="width: 70%;">
-    This solution is part of the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.
-  </div>
-  <div style="width: 30%;">
-    <img src="./media/ai-in-a-box.png" alt="AI-in-a-box Project Logo: Description" style="width: 10%">
-  </div>
-</div> -->
-|                                                                                                                                                                                                                                                                                                                                  ||
+|||
 |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ---:|
 | This solution is part of the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.| <img src="./media/ai-in-a-box.png" alt="AI-in-a-box Logo: Description" style="width: 70%"> |
 
@@ -20,6 +12,7 @@ We will use the power of Azure Open AI and Semantic Kernel to translate your nat
 
 And with Azure Speech Services, we will convert your speech into text and synthesize the results as speech. This means that you can hear the results of your query spoken back to you, making it easier to understand and digest the information.
 
+![](./media/banner-nlp-to-sql-in-a-box.png)
 
 ## What's in the Box
 <img src="./architecture/nlp_to_sql_architecture.png" />
@@ -56,11 +49,51 @@ This solution can be adapted for many other use cases. Here are some ideas:
 3. Install [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
 4. Install [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd)
 
-### Deploy to Azure
+### UI Deploy
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fnlp-sql-in-a-box%2Fmain%2Finfra%2Fazuredeploy.json)
+
+#### Required Input Parameters
+The parameters below are required in order to deploy the infrastructure.
+- Subscription
+- Region
+- Environment Name
+- Principal Id
+  - You can find this by running the following command:
+    ```bash
+    az ad signed-in-user show --query id -o tsv
+    ```
+- Administrator Login
+
+#### Optional Input Parameters
+- IP Address
+  - If you want to allow your IP address to access the SQL Server, you can provide it here.
+
+#### Output Parameters
+After the deployment is complete, you can find the output parameters by clicking on the `Outputs` tab.
+You need to create an `.env` file in the root of the project and fill it with the output parameters. The `.env` file should look like this:
+```bash
+AZURE_LOCATION="<azure_location>"
+AZURE_OPENAI_CHAT_DEPLOYMENT_NAME="<azure_openai_chat_deployment_name>"
+AZURE_OPENAI_ENDPOINT="<azure_openai_endpoint>"
+SPEECH_SERVICE_ID="<speech_service_id>"
+SQL_SERVER_NAME = "<sql_server_name>"
+SQL_DATABASE_NAME = "<sql_database_name>"
+```
+
+Note: whenever the biceps files are changed, the `azuredeploy.json` file must be updated. To do this, run the following command:
+
+```bash
+az bicep build --file infra/main.bicep --outfile infra/azuredeploy.json
+```
+
+### Azd deploy
 1. Clone this repository locally
   
     `git clone https://github.com/Azure-Samples/gpt-video-analysis-in-a-box`  
 2. Deploy resources
+
+    `az login`
 
     `azd auth login`
 
@@ -71,6 +104,8 @@ You will be prompted for:
 - azure subscription
 - azure region (we suggest using `eastus2`)
 - database administrator login
+
+When you deploy using this method, the `.env` file will be created automatically with the output parameters.
 
 ### Clean up
 To remove all resources created by this solution, run:
@@ -90,7 +125,7 @@ To remove all resources created by this solution, run:
         - `azd up`
 4. Install requirements
     
-        `pip install -r src/requirements.txt`
+  `pip install -r src/requirements.txt`
 
 ### Run Locally
 

@@ -5,10 +5,6 @@ targetScope = 'subscription'
 @description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 param environmentName string
 
-@minLength(1)
-@description('Primary location for all resources (for example US EAST 2)')
-param location string
-
 @description('Resource group name')
 param resourceGroupName string = ''
 
@@ -16,7 +12,7 @@ param resourceGroupName string = ''
 param principalId string
 
 @description('Tags to be used for all resources')
-param tags object
+param tags object = {}
 
 //OpenAI Module Parameters
 @description('OpenAI resource name')
@@ -36,6 +32,7 @@ param ipAddress string = ''
 @description('Speech service resource name')
 param speechServiceName string = ''
 
+var location = deployment().location
 var abbrs = loadJsonContent('abbreviations.json')
 var uniqueSuffix = substring(uniqueString(subscription().id, environmentName), 1, 5)
 

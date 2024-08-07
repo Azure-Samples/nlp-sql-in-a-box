@@ -2,8 +2,8 @@ import logging
 
 from semantic_kernel.contents.chat_history import ChatHistory
 
-from src.speech import Speech
-from src.kernel import Kernel
+from ..speech import Speech
+from ..kernel import Kernel
 
 
 logger = logging.getLogger(__name__)

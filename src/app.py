@@ -7,10 +7,10 @@ from azure.identity import DefaultAzureCredential
 from semantic_kernel.contents.chat_history import ChatHistory
 
 
-from speech import Speech
-from kernel import Kernel
-from database import Database
-from orchestrator import Orchestrator
+from .speech import Speech
+from .kernel import Kernel
+from .database import Database
+from .orchestrator import Orchestrator
 
 
 logging.basicConfig(
