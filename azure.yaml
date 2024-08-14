@@ -2,14 +2,6 @@
 
 name: nlpsql-in-a-box
 hooks:
-  preprovision:
-    # sets the PRINCIPAL_ID environment variable to the signed-in user's id
-    windows:
-      shell: pwsh
-      run: azd env set PRINCIPAL_ID $(az ad signed-in-user show --query id -o tsv)
-    posix:
-      shell: sh
-      run: azd env set PRINCIPAL_ID $(az ad signed-in-user show --query id -o tsv)
   postprovision:
     # updates the .env file with the values from the azd environment
     windows:
