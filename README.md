@@ -90,7 +90,7 @@ az bicep build --file infra/main.bicep --outfile infra/azuredeploy.json
 ### Azd deploy
 1. Clone this repository locally
   
-    `git clone https://github.com/Azure-Samples/gpt-video-analysis-in-a-box`  
+    `git clone https://github.com/Azure-Samples/nlp-sql-in-a-box/`  
 2. Deploy resources
 
     `az login`
