@@ -1,3 +1,20 @@
+---
+page_type: sample
+languages:
+- azdeveloper
+- powershell
+- bicep
+- python
+products:
+- azure
+- azure-openai
+- azure-speech-services
+urlFragment: nlp-sql-in-a-box
+name: AI-in-a-Box - NLP to SQL Chatbot
+description: NLP-SQL-in-a-Box is part of Microsoft's AI-in-a-Box framework, designed to simplify the deployment of AI and ML solutions. This project enables users to interact with SQL databases using natural language and speech, leveraging Azure OpenAI, Semantic Kernel, and Azure AI Speech Service to translate spoken queries into SQL statements, execute them, and deliver results audibly, ensuring an intuitive and user-friendly experience.
+---
+<!-- YAML front-matter schema: https://review.learn.microsoft.com/en-us/help/contribute/samples/process/onboarding?branch=main#supported-metadata-fields-for-readmemd -->
+
 # NLP-SQL-in-a-Box
 
 |||
