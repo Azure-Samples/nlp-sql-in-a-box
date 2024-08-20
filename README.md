@@ -7,11 +7,13 @@ languages:
 - python
 products:
 - azure
+- ai-services
 - azure-openai
-- azure-speech-services
+- azure-speech
+- azure-sql-database
 urlFragment: nlp-sql-in-a-box
-name: AI-in-a-Box - NLP to SQL Chatbot
-description: NLP-SQL-in-a-Box is part of Microsoft's AI-in-a-Box framework, designed to simplify the deployment of AI and ML solutions. This project enables users to interact with SQL databases using natural language and speech, leveraging Azure OpenAI, Semantic Kernel, and Azure AI Speech Service to translate spoken queries into SQL statements, execute them, and deliver results audibly, ensuring an intuitive and user-friendly experience.
+name: NLP to SQL Chatbot in-a-box (AI-in-a-Box) with enables Azure SQL databases, Azure OpenAI, Semantic Kernel, and Azure AI Speech Service
+description: Users to interact with SQL databases using natural language and speech, leveraging Azure OpenAI, Semantic Kernel, and Azure AI Speech Service to translate spoken queries into SQL statements, execute them, and deliver results audibly, ensuring an intuitive and user-friendly experience.
 ---
 <!-- YAML front-matter schema: https://review.learn.microsoft.com/en-us/help/contribute/samples/process/onboarding?branch=main#supported-metadata-fields-for-readmemd -->
 
@@ -19,7 +21,7 @@ description: NLP-SQL-in-a-Box is part of Microsoft's AI-in-a-Box framework, desi
 
 |||
 |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ---:|
-| This solution is part of the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.| <img src="./media/ai-in-a-box.png" alt="AI-in-a-box Logo: Description" style="width: 70%"> |
+| This solution is part of the AI-in-a-Box framework developed by the team of Microsoft Customer Engineers and Architects to accelerate the deployment of AI and ML solutions. Our goal is to simplify the adoption of AI technologies by providing ready-to-use accelerators that ensure quality, efficiency, and rapid deployment.| !["AI-in-a-box Logo: Description"](./media/ai-in-a-box.png) |
 
 ## User Story
 
