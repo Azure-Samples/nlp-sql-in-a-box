@@ -1,12 +1,11 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
-
 name: nlpsql-in-a-box
 hooks:
   postprovision:
-    # updates the .env file with the values from the azd environment
     windows:
       shell: pwsh
       run: azd env get-values > .env
     posix:
       shell: sh
       run: azd env get-values > .env
+metadata:
+  template: nlp-sql-in-a-box@0.0.1-beta
